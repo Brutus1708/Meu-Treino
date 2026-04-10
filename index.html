@@ -3,60 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TreinoPRO | Smart & Gaviões Edition</title>
+    <title>TreinoPRO | Especialista</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .glass { background: rgba(31, 41, 55, 0.7); backdrop-filter: blur(10px); }
-        .btn-gradient { background: linear-gradient(90deg, #22c55e, #3b82f6); }
-        .hidden { display: none; }
+        body { -webkit-tap-highlight-color: transparent; }
+        .glass { background: rgba(17, 24, 39, 0.9); backdrop-filter: blur(10px); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-black text-white font-sans selection:bg-green-500">
 
     <div id="setupScreen" class="min-h-screen flex flex-col p-6 items-center justify-center">
         <div class="w-full max-w-sm">
-            <h1 class="text-3xl font-black mb-2 text-center uppercase italic">Bio<span class="text-green-500">Check</span></h1>
-            <p class="text-gray-400 text-center mb-8 text-sm italic">Otimizado para máquinas Smart Fit e Gaviões</p>
+            <h1 class="text-4xl font-black mb-2 text-center uppercase italic">Bio<span class="text-green-500">Check</span></h1>
+            <p class="text-gray-400 text-center mb-8 text-sm">Monte seu planejamento semanal</p>
             
             <div class="space-y-4">
-                <input type="number" id="peso" placeholder="Peso (kg)" class="w-full p-4 rounded-xl bg-gray-900 border border-gray-800 focus:border-green-500 outline-none">
-                <input type="number" id="altura" placeholder="Altura (cm)" class="w-full p-4 rounded-xl bg-gray-900 border border-gray-800 focus:border-green-500 outline-none">
-                
-                <select id="objetivo" class="w-full p-4 rounded-xl bg-gray-900 border border-gray-800 focus:border-green-500 outline-none">
-                    <option value="hipertrofia">Ganho de Massa (Hipertrofia)</option>
-                    <option value="definicao">Definição / Emagrecimento</option>
-                    <option value="forca">Força Bruta</option>
-                </select>
-
-                <button onclick="gerarTreino()" class="w-full p-4 rounded-xl btn-gradient font-black uppercase text-black hover:scale-105 transition-transform">
-                    Montar Protocolo Especialista
+                <input type="number" id="peso" placeholder="Peso (kg)" class="w-full p-4 rounded-xl bg-gray-900 border border-gray-800 outline-none">
+                <input type="number" id="altura" placeholder="Altura (cm)" class="w-full p-4 rounded-xl bg-gray-900 border border-gray-800 outline-none">
+                <button onclick="iniciarApp()" class="w-full p-4 rounded-xl bg-green-500 font-black uppercase text-black">
+                    Gerar Minha Semana
                 </button>
             </div>
         </div>
     </div>
 
     <div id="appScreen" class="hidden min-h-screen pb-10">
-        <header class="p-6 sticky top-0 glass z-50 border-b border-gray-800">
-            <div class="flex justify-between items-start">
-                <div>
-                    <h2 id="diaTexto" class="text-2xl font-black uppercase italic">Segunda-Feira</h2>
-                    <p id="divisaoNome" class="text-green-500 font-bold text-xs">PULL DAY (COSTAS E BÍCEPS)</p>
-                </div>
-                <button onclick="voltarParaSetup()" class="text-[10px] bg-gray-800 px-3 py-1 rounded-full uppercase border border-gray-700">Novo Treino</button>
+        <header class="pt-6 sticky top-0 glass z-50 border-b border-gray-800">
+            <div class="px-6 flex justify-between items-center mb-4">
+                <h2 class="text-xl font-black uppercase">Seu Treino</h2>
+                <button onclick="location.reload()" class="text-xs bg-gray-800 px-3 py-1 rounded-full">Trocar Plano</button>
             </div>
+            
+            <div class="flex overflow-x-auto hide-scrollbar space-x-2 px-6 pb-4" id="menuDias">
+                </div>
         </header>
 
         <div class="p-6">
-            <div class="mb-8 p-4 rounded-2xl bg-blue-900/30 border border-blue-500/50">
-                <h4 class="text-blue-400 font-bold text-xs uppercase mb-1">✓ Validação Técnica</h4>
-                <p id="validacaoTexto" class="text-xs text-blue-100 leading-relaxed"></p>
-            </div>
-
+            <h3 id="tituloDivisao" class="text-green-500 font-bold text-sm mb-6 uppercase"></h3>
             <div id="listaExercicios" class="space-y-6">
                 </div>
         </div>
     </div>
 
     <script src="app.js"></script>
+    <script>
+        // Registra o Service Worker para garantir que o Chrome instale como App
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(() => {
+                console.log('Service Worker Registrado!');
+            });
+        }
+    </script>
 </body>
 </html>
