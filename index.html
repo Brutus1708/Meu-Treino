@@ -1,193 +1,86 @@
-// BANCO DE DADOS DE EXERCÍCIOS (Com Gifs/Imagens demonstrativas)
-const dbExercicios = {
-    peito: [
-        { nome: "Supino Reto Barra", tipo: "forca", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Bench-Press.gif" },
-        { nome: "Supino Inclinado Halteres", tipo: "hipertrofia", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Incline-Dumbbell-Press.gif" },
-        { nome: "Crucifixo Máquina", tipo: "isolador", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Pec-Deck-Fly.gif" },
-        { nome: "Crossover Polia Alta", tipo: "isolador", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Cable-Crossover.gif" }
-    ],
-    costas: [
-        { nome: "Puxada Frontal", tipo: "hipertrofia", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Lat-Pulldown.gif" },
-        { nome: "Remada Curvada", tipo: "forca", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Row.gif" },
-        { nome: "Remada Máquina Articulada", tipo: "hipertrofia", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/04/Lever-T-bar-Row.gif" }
-    ],
-    pernas: [
-        { nome: "Agachamento Livre", tipo: "forca", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/BARBELL-SQUAT.gif" },
-        { nome: "Leg Press 45", tipo: "hipertrofia", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Leg-Press.gif" },
-        { nome: "Cadeira Extensora", tipo: "isolador", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Leg-Extension.gif" },
-        { nome: "Cadeira Flexora", tipo: "isolador", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Seated-Leg-Curl.gif" }
-    ],
-    ombros: [
-        { nome: "Desenvolvimento Halteres", tipo: "hipertrofia", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Shoulder-Press.gif" },
-        { nome: "Elevação Lateral", tipo: "isolador", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Dumbbell-Lateral-Raise.gif" }
-    ],
-    bracos: [
-        { nome: "Rosca Direta Barra", tipo: "hipertrofia", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Barbell-Curl.gif" },
-        { nome: "Tríceps Polia", tipo: "isolador", gif: "https://fitnessprogramer.com/wp-content/uploads/2021/02/Pushdown.gif" }
-    ]
-};
-
-// INICIALIZAÇÃO
-window.onload = () => {
-    // Verifica se já existe um plano salvo no celular dessa pessoa
-    const planoSalvo = localStorage.getItem("meuPlanoTreino");
-    if (planoSalvo) {
-        meuPlano = JSON.parse(planoSalvo);
-        mostrarApp();
-    }
-};
-
-let meuPlano = {};
-
-// FUNÇÃO: Sorteia N exercícios de uma lista (Variedade!)
-function sortearExercicios(array, qtd) {
-    let embaralhado = array.sort(() => 0.5 - Math.random());
-    return embaralhado.slice(0, qtd);
-}
-
-// FUNÇÃO PRINCIPAL: Cria um treino único para a pessoa
-function gerarPlano() {
-    const peso = document.getElementById('peso').value;
-    const nivel = document.getElementById('nivel').value;
-    const objetivo = document.getElementById('objetivo').value;
-
-    if (!peso || !nivel || !objetivo) {
-        alert("Preencha todos os campos!");
-        return;
-    }
-
-    // Lógica para sugestão de peso (baseado no peso corporal e nível)
-    let multiplicadorForca = nivel === 'iniciante' ? 0.15 : (nivel === 'intermediario' ? 0.3 : 0.5);
-    let cargaBase = Math.round(peso * multiplicadorForca);
-
-    // Estrutura Dinâmica: A (Peito/Tríceps), B (Costas/Bíceps), C (Pernas/Ombro)
-    const treinoA = [
-        ...sortearExercicios(dbExercicios.peito, 3),
-        ...sortearExercicios(dbExercicios.bracos, 1) // Pegando 1 de tríceps aleatório (simplificado)
-    ];
-    const treinoB = [
-        ...sortearExercicios(dbExercicios.costas, 3),
-        ...sortearExercicios(dbExercicios.bracos, 1) // Pegando 1 de bíceps aleatório
-    ];
-    const treinoC = [
-        ...sortearExercicios(dbExercicios.pernas, 4),
-        ...sortearExercicios(dbExercicios.ombros, 2)
-    ];
-
-    // Configurando séries e reps pelo objetivo
-    let series = objetivo === 'hipertrofia' ? "4" : "3";
-    let reps = objetivo === 'hipertrofia' ? "8 a 12" : "12 a 15";
-
-    // Formata os objetos finais
-    const formatar = (ex) => ({
-        nome: ex.nome,
-        gif: ex.gif,
-        series: series,
-        reps: reps,
-        cargaSugestao: ex.tipo === "isolador" ? Math.max(5, cargaBase - 5) + " kg" : cargaBase + " kg"
-    });
-
-    meuPlano = {
-        divisoes: [
-            { id: "A", nome: "Treino A - Peito e Tríceps", exercicios: treinoA.map(formatar) },
-            { id: "B", nome: "Treino B - Costas e Bíceps", exercicios: treinoB.map(formatar) },
-            { id: "C", nome: "Treino C - Pernas e Ombros", exercicios: treinoC.map(formatar) }
-        ],
-        dataCriacao: new Date().toLocaleDateString()
-    };
-
-    // Salva no aparelho da pessoa (se mandar pra outro, o dele estará vazio)
-    localStorage.setItem("meuPlanoTreino", JSON.stringify(meuPlano));
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="manifest.json">
     
-    mostrarApp();
-}
+    <title>Treino Inteligente</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #0a0a0a; color: white; -webkit-tap-highlight-color: transparent; }
+        .hidden { display: none !important; }
+        .app-container { padding-bottom: 80px; }
+        .exercise-card { background: #171717; border-radius: 16px; overflow: hidden; margin-bottom: 12px; }
+        .gif-container { width: 100%; height: 180px; background: #262626; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .gif-container img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(23, 23, 23, 0.95); backdrop-filter: blur(10px); border-top: 1px solid #333; display: flex; justify-content: space-around; padding: 12px 0 24px 0; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #737373; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+        .nav-item.active { color: #22c55e; }
+        .nav-icon { font-size: 20px; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
 
-function mostrarApp() {
-    document.getElementById('setupScreen').classList.add('hidden');
-    document.getElementById('appScreen').classList.remove('hidden');
-    
-    renderizarTreinoDoDia();
-    renderizarPlanoCompleto();
-}
+    <div id="setupScreen" class="min-h-screen flex flex-col p-6 items-center justify-center bg-black">
+        <div class="w-full max-w-sm">
+            <h1 class="text-3xl font-black mb-2 text-center text-white">Criar <span class="text-green-500">Perfil</span></h1>
+            <p class="text-gray-400 text-center mb-8 text-sm">A IA montará uma periodização única para você.</p>
+            
+            <div class="space-y-4">
+                <input type="number" id="peso" placeholder="Seu Peso (kg)" class="w-full p-4 rounded-xl bg-[#171717] text-white border border-[#333] focus:border-green-500 outline-none">
+                <select id="nivel" class="w-full p-4 rounded-xl bg-[#171717] text-white border border-[#333] focus:border-green-500 outline-none">
+                    <option value="" disabled selected>Nível de Experiência</option>
+                    <option value="iniciante">Iniciante (1 a 6 meses)</option>
+                    <option value="intermediario">Intermediário (6m a 2 anos)</option>
+                    <option value="avancado">Avançado (+2 anos)</option>
+                </select>
+                <select id="objetivo" class="w-full p-4 rounded-xl bg-[#171717] text-white border border-[#333] focus:border-green-500 outline-none">
+                    <option value="" disabled selected>Objetivo Principal</option>
+                    <option value="hipertrofia">Ganho de Massa</option>
+                    <option value="emagrecimento">Emagrecimento</option>
+                </select>
 
-function renderizarTreinoDoDia() {
-    // Simula que hoje é o treino da vez (Ex: Dia da semana)
-    const diaHoje = new Date().getDay();
-    let indexTreino = (diaHoje - 1) % meuPlano.divisoes.length; // Segunda=0(A), Terça=1(B), etc.
-    if(diaHoje === 0) indexTreino = 0; // Domingo repete o A
-
-    const treinoDeHoje = meuPlano.divisoes[indexTreino];
-    
-    document.getElementById('appHeaderSub').innerText = treinoDeHoje.nome;
-    const tabHoje = document.getElementById('tabHoje');
-    tabHoje.innerHTML = '';
-
-    treinoDeHoje.exercicios.forEach((ex, i) => {
-        tabHoje.innerHTML += `
-            <div class="exercise-card">
-                <div class="gif-container">
-                    <img src="${ex.gif}" alt="${ex.nome}">
-                </div>
-                <div class="p-4">
-                    <h3 class="font-black text-lg text-white mb-2">${i+1}. ${ex.nome}</h3>
-                    <div class="flex justify-between bg-[#262626] p-3 rounded-lg">
-                        <div class="text-center">
-                            <p class="text-[#a3a3a3] text-[10px] uppercase">Séries</p>
-                            <p class="text-green-500 font-bold text-lg">${ex.series}</p>
-                        </div>
-                        <div class="text-center">
-                            <p class="text-[#a3a3a3] text-[10px] uppercase">Reps</p>
-                            <p class="text-white font-bold text-lg">${ex.reps}</p>
-                        </div>
-                        <div class="text-center">
-                            <p class="text-[#a3a3a3] text-[10px] uppercase">Carga Sugerida</p>
-                            <p class="text-blue-400 font-bold text-lg">${ex.cargaSugestao}</p>
-                        </div>
-                    </div>
-                </div>
+                <button onclick="gerarPlano()" class="w-full p-4 rounded-xl bg-green-500 text-black font-black uppercase mt-4">
+                    Gerar Meu Treino
+                </button>
             </div>
-        `;
-    });
-}
+        </div>
+    </div>
 
-function renderizarPlanoCompleto() {
-    const listaSemana = document.getElementById('listaSemana');
-    listaSemana.innerHTML = '';
+    <div id="appScreen" class="hidden app-container">
+        <header class="p-6 pt-12 bg-[#171717] border-b border-[#333]">
+            <h2 id="appHeaderTitle" class="text-2xl font-black text-white">Treino de Hoje</h2>
+            <p id="appHeaderSub" class="text-green-500 font-bold text-sm"></p>
+        </header>
 
-    meuPlano.divisoes.forEach(divisao => {
-        listaSemana.innerHTML += `
-            <div class="bg-[#171717] border border-[#333] rounded-xl p-4 mb-4">
-                <h3 class="text-green-500 font-black text-lg mb-2">${divisao.nome}</h3>
-                <ul class="text-gray-300 text-sm space-y-2">
-                    ${divisao.exercicios.map(ex => `<li>• ${ex.nome} (${ex.series}x${ex.reps})</li>`).join('')}
-                </ul>
+        <div class="p-4">
+            <div id="tabHoje" class="space-y-4"></div>
+            <div id="tabSemana" class="hidden space-y-6">
+                <p class="text-gray-400 text-sm mb-4">Sua periodização exclusiva de treinos.</p>
+                <div id="listaSemana"></div>
             </div>
-        `;
-    });
-}
+        </div>
 
-// NAVEGAÇÃO DO MENU INFERIOR
-function trocarAba(aba) {
-    document.getElementById('tabHoje').classList.add('hidden');
-    document.getElementById('tabSemana').classList.add('hidden');
-    document.getElementById('btnNavHoje').classList.remove('active');
-    document.getElementById('btnNavSemana').classList.remove('active');
+        <div class="bottom-nav">
+            <div class="nav-item active" id="btnNavHoje" onclick="trocarAba('hoje')">
+                <span class="nav-icon">💪</span>
+                <span>Hoje</span>
+            </div>
+            <div class="nav-item" id="btnNavSemana" onclick="trocarAba('semana')">
+                <span class="nav-icon">📅</span>
+                <span>Meu Plano</span>
+            </div>
+            <div class="nav-item" onclick="resetarApp()">
+                <span class="nav-icon">⚙️</span>
+                <span>Refazer</span>
+            </div>
+        </div>
+    </div>
 
-    if(aba === 'hoje') {
-        document.getElementById('tabHoje').classList.remove('hidden');
-        document.getElementById('btnNavHoje').classList.add('active');
-        document.getElementById('appHeaderTitle').innerText = "Treino de Hoje";
-    } else {
-        document.getElementById('tabSemana').classList.remove('hidden');
-        document.getElementById('btnNavSemana').classList.add('active');
-        document.getElementById('appHeaderTitle').innerText = "Plano da Semana";
-        document.getElementById('appHeaderSub').innerText = `Criado em: ${meuPlano.dataCriacao}`;
-    }
-}
-
-function resetarApp() {
-    if(confirm("Deseja apagar seu plano atual e gerar um novo?")) {
-        localStorage.removeItem("meuPlanoTreino");
-        location.reload(); // Recarrega a página para voltar pra tela inicial
-    }
-}
+    <script src="app.js"></script>
+</body>
+</html>
